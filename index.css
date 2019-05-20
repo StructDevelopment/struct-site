@@ -1,0 +1,109 @@
+html,
+body {
+  min-width: 350px;
+  margin: 0;
+  padding: 10px 0;
+  font-family: Montserrat;
+  color: #ECA539;
+  background-color: #252526;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  width: 225px;
+  justify-content: center;
+  align-items: center;
+  padding: 25px 0;
+}
+
+.logo img {
+  display: block;
+  max-height: 100%;
+  max-width: 100%;
+}
+
+.social {
+  display: flex;
+  flex-direction: row;
+  font-size: 2em;
+  text-align: center;
+}
+
+.social > div {
+  margin-left: 40px;
+}
+
+.social > div:first-child {
+  margin-left: 0;
+}
+
+.social * a {
+  font-size: 2em;
+  text-decoration: none;
+}
+
+.slogan {
+  margin: 0;
+  padding: 10px 0;
+  font-size: 1.25em;
+  list-style: none;
+}
+
+.slogan li {
+  text-align: center;
+  margin-bottom: 5px;
+}
+
+.slogan li::after {
+  content: "•";
+  color: white;
+  margin-left: 5px;
+}
+
+.slogan li::before {
+  content: "•";
+  color: white;
+  margin-right: 5px;
+}
+
+.sub {
+  padding: 10px 0;
+  line-height: 1.3em;
+  font-size: 1.25em;
+  text-align: center;
+}
+
+@media (min-width:768px) {
+  .logo {
+    width: 700px;
+  }
+  .social {
+    font-size: 2.6em;
+  }
+  .slogan {
+    flex-direction: row;
+    align-items: center;
+    padding: 25px 0;
+    font-size: 2em;
+  }
+  .slogan li {
+    margin-bottom: 10px;
+  }
+  .sub {
+    padding: 25px 0;
+    line-height: 1.4em;
+    font-size: 2.6em;
+  }
+}
+
+@font-face {
+  font-family: Montserrat;
+  src: url("./fonts/Montserrat-Regular.ttf") format("opentype");
+}
