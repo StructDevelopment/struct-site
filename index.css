@@ -60,7 +60,7 @@ body {
   align-items: center;
   padding: 100px 0;
   background-color: #333333;
-  color: #808080;
+  color: #9b9a9a;
 }
 
 .promise-logo {
@@ -236,6 +236,43 @@ body {
 .software-content-message span {
   font-weight: bold;
   color: #ECA539;
+}
+
+.technology {
+  box-sizing: border-box;
+  height: 730px;
+  padding: 180px;
+  background-color: #4D4D4D;
+  color: white;
+}
+
+.technology-content {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.technology-grid {
+  width: 500px;
+}
+
+.technology-message {
+  margin-top: 25px;
+  max-width: 350px;
+  line-height: 35px;
+  font-size: 1.2em;
+}
+
+.technology-text {
+  display: flex;
+  flex-direction: column;
+  width: 500px;
+}
+
+.technology-title {
+  font-size: 4.3em;
+  font-weight: bold;
 }
 
 @media (min-width: 768px) and (max-width: 1200px) {
