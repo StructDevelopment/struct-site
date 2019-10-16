@@ -1,109 +1,259 @@
 html,
 body {
-  min-width: 350px;
+  width: 100%;
   margin: 0;
-  padding: 10px 0;
+  padding: 0;
   font-family: Montserrat;
   color: #ECA539;
   background-color: #252526;
 }
 
-.content {
+.contact {
+  height: 1000px;
+}
+
+.header {
+  height: 65px;
+  border-bottom: solid 2px #ECA539BB;
+}
+
+.header-content {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  flex-direction: row;
+  justify-content: space-between;
   align-items: center;
+  height: 100%;
 }
 
 .logo {
-  display: flex;
-  width: 225px;
-  justify-content: center;
-  align-items: center;
-  padding: 25px 0;
+  height: 35px;
 }
 
 .logo img {
   display: block;
-  max-height: 100%;
+  box-sizing: border-box;
   max-width: 100%;
+  max-height: 100%;
 }
 
-.social {
+.menu {
   display: flex;
   flex-direction: row;
-  font-size: 2em;
+  justify-content: space-between;
+  width: 375px;
+}
+
+.menu-item {
+  font-weight: 100;
+  cursor: pointer;
+}
+
+.mirror {
+  transform: scaleX(-1);
+  -webkit-transform: scaleX(-1);
+}
+
+.promise {
+  display: flex;
+  flex-direction: column;
+  justify-content:  center;
+  align-items: center;
+  padding: 100px 0;
+  background-color: #333333;
+  color: #808080;
+}
+
+.promise-logo {
+  height: 55px;
+}
+
+.promise-logo img {
+  display: block;
+  margin: 5px;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.promise-message {
+  max-width: 650px;
+  margin: 30px 0;
   text-align: center;
+  line-height: 25px;
 }
 
-.social > div {
-  margin-left: 40px;
+.promise-title {
+  font-size: 1.4em;
+  font-weight: bolder;
 }
 
-.social > div:first-child {
-  margin-left: 0;
+.rail {
+  height: 100%;
+  margin: 0 auto;
+  background-color: transparent;
 }
 
-.social * a {
-  font-size: 2em;
-  text-decoration: none;
+.services {
+  position: relative;
+  height: 850px;
+  overflow-y: hidden;
 }
 
-.slogan {
-  margin: 0;
-  padding: 10px 0;
-  font-size: 1.25em;
-  list-style: none;
+.services-background {
+  display: flex;
+  top: 0;
+  left: 0;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  filter: grayscale(50%) opacity(5%);
+  z-index: -1;
 }
 
-.slogan li {
-  text-align: center;
-  margin-bottom: 5px;
+.services-background img {
+  display: block;
 }
 
-.slogan li::after {
-  content: "•";
+.services-body {
+  position: relative;
+  height: 500px;
+  width: 900px;
+  padding-top: 50px;
+}
+
+.services-content {
+  position: absolute;
+  display: flex;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+  z-index: 1;
+}
+
+.services-lines {
+  position: absolute;
+  top: 90px;
+  left: 340px;
+}
+
+.services-lines img {
+  position: relative;
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.services-items {
+  position: absolute;
+  top: 125px;
+  right: 35px;
+  line-height: 65px;
   color: white;
-  margin-left: 5px;
+  text-align: right;
+  font-size: 2em;
+  font-weight: bold;
 }
 
-.slogan li::before {
-  content: "•";
+.services-message {
+  width: 350px;
+  margin-top: 25px;
+  font-size: 1.2em;
+  line-height: 30px;
   color: white;
-  margin-right: 5px;
 }
 
-.sub {
-  padding: 10px 0;
-  line-height: 1.3em;
-  font-size: 1.25em;
-  text-align: center;
+.services-title {
+  font-size: 4em;
+  color: white;
 }
 
-@media (min-width:768px) {
-  .logo {
-    width: 700px;
+.services-title span {
+  font-weight: bold;
+  color: #ECA539;
+}
+
+.software {
+  position: relative;
+  height: 400px;
+  overflow-y: hidden;
+  background-color: #1f1f1f;
+}
+
+.software-background {
+  display: flex;
+  top: 0;
+  left: 0;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  filter: grayscale(50%) opacity(50%);
+  z-index: -1;
+}
+
+.software-background img {
+  display: block;
+}
+
+.software-content {
+  position: absolute;
+  display: flex;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  flex-direction: row;
+  justify-content: center;
+  background-color: transparent;
+  z-index: 1;
+}
+
+.software-help {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  bottom: 20px;
+  font-size: 24px;
+}
+
+.software-help img {
+  max-height: 40px;
+}
+
+.software-content-message {
+  margin-top: 100px;
+  margin-right: 500px;
+  font-size: 2.5em;
+  color: white;
+}
+
+.software-content-message span {
+  font-weight: bold;
+  color: #ECA539;
+}
+
+@media (min-width: 768px) and (max-width: 1200px) {
+  .rail {
+    width: 100%;
+    padding: 0 25px;
   }
-  .social {
-    font-size: 2.6em;
-  }
-  .slogan {
-    flex-direction: row;
-    align-items: center;
-    padding: 25px 0;
-    font-size: 2em;
-  }
-  .slogan li {
-    margin-bottom: 10px;
-  }
-  .sub {
-    padding: 25px 0;
-    line-height: 1.4em;
-    font-size: 2.6em;
+}
+
+@media (min-width: 1200px) {
+  .rail {
+    width: 1150px;
   }
 }
 
 @font-face {
   font-family: Montserrat;
-  src: url("./fonts/montserrat-regular.otf") format("opentype");
+  src: url("./fonts/Montserrat-Regular.ttf") format("truetype"),
+       url("./fonts/Montserrat-Light.ttf") format("truetype"),
+       url("./fonts/Montserrat-Bold.ttf") format("truetype")
 }
