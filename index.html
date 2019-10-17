@@ -11,8 +11,30 @@
   <link rel="stylesheet" type="text/css" media="screen" href="index.css" />
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   <script>
-    function scrollTo(id) {
-      // If you notice this, then you sir are quite perceptive!
+    function scrollToElement(id) {
+      // Find the element.
+      const element = document.getElementById(id);
+      if (!element) {
+        return;
+      }
+
+      // If window.scroll is available, use that.
+      if (window.scroll) {
+        const y = element.getBoundingClientRect().top + window.scrollY;
+        window.scroll({
+          top: y,
+          behavior: 'smooth'
+        });
+
+        return;
+      }
+
+      // If element.scrollIntoView is not available, then do nothing.
+      if (!element.scrollIntoView) {
+        return;
+      }
+
+      element.scrollIntoView();
     }
   </script>
 </head>
@@ -25,9 +47,9 @@
           <img src="./images/logo.PNG" alt="logo">
         </div>
         <div class="menu">
-          <div class="menu-item">Services</div>
-          <div class="menu-item">Technology</div>
-          <div class="menu-item">Contact</div>
+          <div class="menu-item" onclick="scrollToElement('services')">Services</div>
+          <div class="menu-item" onclick="scrollToElement('technology')">Technology</div>
+          <div class="menu-item" onclick="scrollToElement('contact')">Contact</div>
         </div>
       </div>
     </div>
@@ -72,7 +94,7 @@
       <img src="./images/small-logo.png" alt="small-logo">
     </div>
   </div>
-  <div class="services">
+  <div id="services" class="services">
     <div class="services-background">
       <img src="./images/city.jpg" alt="software">
     </div>
@@ -104,7 +126,7 @@
       </div>
     </div>
   </div>
-  <div class="technology">
+  <div id="technology" class="technology">
     <div class="rail flex">
       <div class="technology-content">
         <div class="technology-text">
@@ -138,7 +160,7 @@
       </div>
     </div>
   </div>
-  <div class="contact">
+  <div id="contact" class="contact">
     <div class="rail">
       <div class="contact-content">
         <div class="contact-left">
