@@ -8,10 +8,66 @@ body {
   background-color: #252526;
 }
 
+.button {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: transparent;
+  font-size: 1.2em;
+  cursor: pointer;
+}
+
+.button:hover {
+  font-weight: bold;
+}
+
 .contact {
   padding: 50px 0;
   background-color: #ECA539;
   color: white;
+}
+
+.contact-content {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.contact-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 50%;
+}
+
+.contact-input {
+  box-sizing: border-box;
+  width: 48.6%;
+  margin-top: 15px;
+  padding: 10px;
+  border: none;
+  border-radius: 0;
+  font-family: inherit;
+  font-size: 1.25em;
+  background-color: #AA7725;
+  color: #FFFFFF;
+}
+
+::placeholder {
+  color: #ffffffa4;
+}
+
+:-ms-input-placeholder {
+  color: ffffffa4;
+}
+
+::-ms-input-placeholder {
+  color: ffffffa4;
+}
+
+
+.contact-input:active,
+.contact-input:focus {
+  border: none;
 }
 
 .contact-item {
@@ -21,6 +77,18 @@ body {
 
 .contact-item i {
   margin-right: 2px;
+}
+
+.contact-right {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+}
+
+.contact-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .contact-title {
@@ -83,7 +151,7 @@ body {
 .promise {
   display: flex;
   flex-direction: column;
-  justify-content:  center;
+  justify-content: center;
   align-items: center;
   padding: 100px 0;
   background-color: #333333;
@@ -343,6 +411,6 @@ body {
 @font-face {
   font-family: Montserrat;
   src: url("./fonts/Montserrat-Regular.ttf") format("truetype"),
-       url("./fonts/Montserrat-Light.ttf") format("truetype"),
-       url("./fonts/Montserrat-Bold.ttf") format("truetype")
+    url("./fonts/Montserrat-Light.ttf") format("truetype"),
+    url("./fonts/Montserrat-Bold.ttf") format("truetype")
 }
