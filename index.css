@@ -8,6 +8,10 @@ body {
   background-color: #252526;
 }
 
+textarea {
+  resize: none;
+}
+
 .button {
   margin-top: 10px;
   padding: 10px;
