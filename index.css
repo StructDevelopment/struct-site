@@ -9,7 +9,34 @@ body {
 }
 
 .contact {
-  height: 1000px;
+  padding: 50px 0;
+  background-color: #ECA539;
+  color: white;
+}
+
+.contact-item {
+  margin-top: 30px;
+  font-size: 1.25em;
+}
+
+.contact-item i {
+  margin-right: 2px;
+}
+
+.contact-title {
+  font-size: 4em;
+  font-weight: bold;
+}
+
+.footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 65px;
+}
+
+.flex {
+  display: flex;
 }
 
 .header {
@@ -96,6 +123,7 @@ body {
   position: relative;
   height: 850px;
   overflow-y: hidden;
+  overflow-x: hidden;
 }
 
 .services-background {
@@ -181,6 +209,7 @@ body {
   position: relative;
   height: 400px;
   overflow-y: hidden;
+  overflow-x: hidden;
   background-color: #1f1f1f;
 }
 
@@ -240,8 +269,7 @@ body {
 
 .technology {
   box-sizing: border-box;
-  height: 730px;
-  padding: 180px;
+  padding: 100px 180px;
   background-color: #4D4D4D;
   color: white;
 }
@@ -249,12 +277,36 @@ body {
 .technology-content {
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
+  flex: 1;
 }
 
 .technology-grid {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
   width: 500px;
+  height: 300px;
+}
+
+.technology-grid-item {
+  width: 80px;
+  height: 80px;
+}
+
+.technology-grid-item img {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.technology-grid-row {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .technology-message {
