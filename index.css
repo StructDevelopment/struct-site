@@ -9,7 +9,20 @@ body {
 }
 
 textarea {
+  height: 120px;
   resize: none;
+}
+
+::placeholder {
+  color: #ffffffa4;
+}
+
+:-ms-input-placeholder {
+  color: ffffffa4;
+}
+
+::-ms-input-placeholder {
+  color: ffffffa4;
 }
 
 .button {
@@ -32,15 +45,16 @@ textarea {
 
 .contact-content {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
 }
 
 .contact-left {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  width: 50%;
+  align-items: center;
+  width: 75%;
 }
 
 .contact-input {
@@ -55,19 +69,6 @@ textarea {
   background-color: #AA7725;
   color: #FFFFFF;
 }
-
-::placeholder {
-  color: #ffffffa4;
-}
-
-:-ms-input-placeholder {
-  color: ffffffa4;
-}
-
-::-ms-input-placeholder {
-  color: ffffffa4;
-}
-
 
 .contact-input:active,
 .contact-input:focus {
@@ -86,13 +87,14 @@ textarea {
 .contact-right {
   display: flex;
   flex-direction: column;
-  width: 50%;
+  width: 75%;
+  margin-top: 30px;
 }
 
 .contact-row {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: space-around;
 }
 
 .contact-title {
@@ -157,7 +159,7 @@ textarea {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 100px 0;
+  padding: 100px 50px;
   background-color: #333333;
   color: #9b9a9a;
 }
@@ -183,11 +185,14 @@ textarea {
 .promise-title {
   font-size: 1.4em;
   font-weight: bolder;
+  text-align: center;
 }
 
 .rail {
+  width: calc(100% - 40px);
   height: 100%;
   margin: 0 auto;
+  padding: 0 20px;
   background-color: transparent;
 }
 
@@ -279,7 +284,7 @@ textarea {
 
 .software {
   position: relative;
-  height: 400px;
+  height: 300px;
   overflow-y: hidden;
   overflow-x: hidden;
   background-color: #1f1f1f;
@@ -314,6 +319,18 @@ textarea {
   z-index: 1;
 }
 
+.software-content-message {
+  margin-top: 75px;
+  font-size: 1.5em;
+  color: white;
+  text-align: center;
+}
+
+.software-content-message span {
+  font-weight: bold;
+  color: #ECA539;
+}
+
 .software-help {
   position: absolute;
   display: flex;
@@ -327,30 +344,19 @@ textarea {
   max-height: 40px;
 }
 
-.software-content-message {
-  margin-top: 100px;
-  margin-right: 500px;
-  font-size: 2.5em;
-  color: white;
-}
-
-.software-content-message span {
-  font-weight: bold;
-  color: #ECA539;
-}
-
 .technology {
   box-sizing: border-box;
-  padding: 100px 180px;
+  padding: 100px 0;
   background-color: #4D4D4D;
   color: white;
 }
 
 .technology-content {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
   flex: 1;
 }
 
@@ -382,10 +388,11 @@ textarea {
 }
 
 .technology-message {
-  margin-top: 25px;
-  max-width: 350px;
+  max-width: 100%;
+  margin: 50px 0;
   line-height: 35px;
   font-size: 1.2em;
+  text-align: center;
 }
 
 .technology-text {
@@ -399,16 +406,60 @@ textarea {
   font-weight: bold;
 }
 
-@media (min-width: 768px) and (max-width: 1200px) {
-  .rail {
-    width: 100%;
-    padding: 0 25px;
+@media (min-width: 950px) {
+  .software-content-message {
+    margin-top: 60px;
+    font-size: 1.8em;
   }
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 1250px) {
+  .contact-content {
+    flex-direction: row;
+    align-items: inherit;
+  }
+
+  .contact-left {
+    align-items: flex-start;
+    width: 50%;
+  }
+
+  .contact-right {
+    width: 50%;
+    margin-top: 0px;
+  }
+
+  .contact-row {
+    justify-content: space-between;
+  }
+
+  .software-content-message {
+    margin-top: 100px;
+    margin-right: 500px;
+    font-size: 2.5em;
+    text-align: left;
+  }
+
   .rail {
-    width: 1150px;
+    max-width: 1200px;
+    padding: 0;
+  }
+
+  .software {
+    height: 400px;
+  }
+
+  .technology-content {
+    flex-direction: row;
+  }
+
+  .technology-message {
+    margin: 0;
+    margin-top: 25px;
+    max-width: 350px;
+    line-height: 35px;
+    font-size: 1.2em;
+    text-align: initial;
   }
 }
 
