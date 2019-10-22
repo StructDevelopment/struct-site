@@ -54,18 +54,18 @@ textarea {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 75%;
+  width: 100%;
 }
 
 .contact-input {
   box-sizing: border-box;
-  width: 48.6%;
-  margin-top: 15px;
-  padding: 10px;
+  width: 100%;
+  margin-top: 10px;
+  padding: 8px;
   border: none;
   border-radius: 0;
   font-family: inherit;
-  font-size: 1.25em;
+  font-size: 1.1em;
   background-color: #AA7725;
   color: #FFFFFF;
 }
@@ -87,19 +87,26 @@ textarea {
 .contact-right {
   display: flex;
   flex-direction: column;
-  width: 75%;
+  width: 100%;
   margin-top: 30px;
 }
 
 .contact-row {
   display: flex;
-  flex-direction: row;
-  justify-content: space-around;
+  flex-direction: column;
 }
 
 .contact-title {
-  font-size: 4em;
+  font-size: 2.5em;
   font-weight: bold;
+}
+
+.dot {
+  height: 5px;
+  width: 5px;
+  margin: 10px auto;
+  background-color: white;
+  border-radius: 50%;
 }
 
 .footer {
@@ -198,13 +205,12 @@ textarea {
 
 .services {
   position: relative;
-  height: 600px;
   overflow-y: hidden;
   overflow-x: hidden;
 }
 
 .services-background {
-  display: flex;
+  display: none;
   top: 0;
   left: 0;
   justify-content: center;
@@ -224,16 +230,27 @@ textarea {
   position: relative;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
+  margin: 50px;
 }
 
 .services-content {
   display: block;
-  position: absolute;
+  position: static;
   top: 0;
   left: 0;
   width: 100%;
   background-color: transparent;
   z-index: 1;
+}
+
+.services-items {
+  margin-top: 25px;
+  line-height: 30px;
+  color: #ECA539;
+  text-align: center;
+  font-size: 1em;
+  font-weight: bold;
 }
 
 .services-lines {
@@ -250,27 +267,20 @@ textarea {
   max-height: 100%;
 }
 
-.services-items {
-  position: absolute;
-  top: 125px;
-  right: 35px;
-  line-height: 65px;
-  color: white;
-  text-align: right;
-  font-size: 2em;
-  font-weight: bold;
-}
-
 .services-message {
-  width: 350px;
+  width: 90%;
   margin-top: 25px;
   font-size: 1.2em;
   line-height: 30px;
+  text-align: center;
   color: white;
 }
 
 .services-title {
-  font-size: 4em;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  font-size: 2.5em;
   color: white;
 }
 
@@ -343,7 +353,7 @@ textarea {
 
 .technology {
   box-sizing: border-box;
-  padding: 100px 0;
+  padding: 50px 0;
   background-color: #4D4D4D;
   color: white;
 }
@@ -362,13 +372,13 @@ textarea {
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  width: 500px;
-  height: 300px;
+  width: 90%;
+  height: 200px;
 }
 
 .technology-grid-item {
-  width: 80px;
-  height: 80px;
+  width: 50px;
+  height: 50px;
 }
 
 .technology-grid-item img {
@@ -395,17 +405,48 @@ textarea {
 .technology-text {
   display: flex;
   flex-direction: column;
-  width: 500px;
+  width: 90%;
 }
 
 .technology-title {
-  font-size: 4.3em;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  font-size: 2.5em;
   font-weight: bold;
 }
 
 @media (min-width: 950px) {
+  .contact-left {
+    width: 75%;
+  }
+
+  .contact-input {
+    width: 48.6%;
+    margin-top: 15px;
+    padding: 10px;
+    font-size: 1.25em;
+  }
+
+  .contact-right {
+    width: 75%;
+  }
+
+  .contact-row {
+    flex-direction: row;
+    justify-content: space-around;
+  }
+
+  .dot {
+    display: none;
+  }
+
   .services {
     height: 850px;
+  }
+
+  .services-background {
+    display: flex;
   }
 
   .services-body {
@@ -414,20 +455,50 @@ textarea {
     justify-content: unset;
     height: 500px;
     width: 900px;
+    margin: 0;
     padding-top: 50px;
   }
 
   .services-content {
     display: flex;
+    position: absolute;
     height: 100%;
     flex-direction: row;
     justify-content: center;
     align-items: center;
+    text-align: left;
+  }
+
+  .services-items {
+    position: absolute;
+    top: 125px;
+    right: 35px;
+    margin-top: 0;
+    line-height: 65px;
+    text-align: right;
+    font-size: 2em;
+    color: white;
   }
 
   .services-lines {
     display: block;
     position: absolute;
+  }
+
+  .services-message {
+    width: 350px;
+    font-size: 1.2em;
+    line-height: 30px;
+  }
+
+  .services-title {
+    justify-content: flex-start;
+    margin-top: 0;
+    font-size: 4em;
+  }
+
+  .technology-grid-row {
+    width: 75%;
   }
 }
 
@@ -451,6 +522,10 @@ textarea {
     justify-content: space-between;
   }
 
+  .contact-title {
+    font-size: 4em;
+  }
+
   .software-content-message {
     margin-top: 100px;
     margin-right: 500px;
@@ -471,6 +546,24 @@ textarea {
     flex-direction: row;
   }
 
+  .technology {
+    padding: 100px 0;
+  }
+
+  .technology-grid {
+    width: 500px;
+    height: 300px;
+  }
+  
+  .technology-grid-item {
+    width: 80px;
+    height: 80px;
+  }
+
+  .technology-grid-row {
+    width: 100%;
+  }
+
   .technology-message {
     margin: 0;
     margin-top: 25px;
@@ -478,6 +571,14 @@ textarea {
     line-height: 35px;
     font-size: 1.2em;
     text-align: initial;
+  }
+
+  .technology-text {
+    width: 500px;
+  }
+
+  .technology-title {
+    font-size: 4.3em;
   }
 }
 
