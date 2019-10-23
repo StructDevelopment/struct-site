@@ -538,6 +538,7 @@ textarea {
     width: 350px;
     font-size: 1.2em;
     line-height: 30px;
+    text-align: left;
   }
 
   .services-title {
