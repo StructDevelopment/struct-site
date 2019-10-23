@@ -52,6 +52,70 @@
 
       element.scrollIntoView();
     }
+
+    function badInputNotification(message) {
+      alert(message);
+    }
+
+    function contact() {
+      // Pull first name.
+      let firstElement = document.getElementById("first");
+      if (!firstElement) {
+        return;
+      }
+
+      // Validate first name.
+      const first = firstElement.value.trim();
+      if (!first || first === "") {
+        badInputNotification("First name must be provided");
+        return;
+      }
+
+      // Pull last name.
+      let lastElement = document.getElementById("last");
+      if (!lastElement) {
+        return;
+      }
+
+      // Get last name value.
+      const last = lastElement.value.trim();
+
+      // Pull phone number.
+      let phoneElement = document.getElementById("phone");
+      if (!phoneElement) {
+        return;
+      }
+
+      // Get phone number.
+      const phone = phoneElement.value.trim();
+
+      // Pull email.
+      let emailElement = document.getElementById("email");
+      if (!emailElement) {
+        return;
+      }
+
+      // Get email.
+      const email = emailElement.value.trim();
+
+      // Email or phone must exist.
+      let hasEmail = email && email !== "";
+      let hasPhone = phone && phone !== "";
+      if (!hasEmail && !hasPhone) {
+        badInputNotification("Either a phone number or email address must be provided.");
+        return;
+      }
+
+      // Validate phone number if necessary.
+      if (hasPhone) {
+
+      }
+
+      // Validate email if necessary.
+      if (hasEmail) {
+
+      }
+    }
   </script>
 </head>
 
@@ -205,13 +269,13 @@
         </div>
         <div class="contact-right">
           <div class="contact-row">
-            <input type="text" id="first" class="contact-input" placeholder="First name">
-            <input type="text" id="last" class="contact-input" placeholder="Last name">
+            <input type="text" id="first" class="contact-input" placeholder="First name" maxlength="100">
+            <input type="text" id="last" class="contact-input" placeholder="Last name" maxlength="100">
           </div>
           <div class="contact-row">
             <input type="text" id="phone" class="contact-input" placeholder="Phone number" type="tel"
-              pattern="[\+]\d{2}[\(]\d{2}[\)]\d{4}[\-]\d{4}">
-            <input type="text" id="email" class="contact-input" placeholder="Email address">
+              pattern="[\+]\d{2}[\(]\d{2}[\)]\d{4}[\-]\d{4}" maxlength="20">
+            <input type="text" id="email" class="contact-input" placeholder="Email address" maxlength="100">
           </div>
           <div class="contact-row">
             <textarea class="contact-input" style="width: 100%;" maxlength="200"
