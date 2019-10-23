@@ -11,6 +11,22 @@
   <link rel="stylesheet" type="text/css" media="screen" href="index.css" />
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   <script>
+    let collapsed = true;
+
+    function moveDrawer() {
+      // Find the drawer.
+      let drawer = document.getElementById("menu-drawer");
+      if (!drawer) {
+        return;
+      }
+
+      // Swap the collapsed value.
+      collapsed = !collapsed;
+
+      // Set the classes appropriately.
+      drawer.className = collapsed ? "menu-drawer" : "menu-drawer expanded";
+    }
+
     function scrollToElement(id) {
       // Find the element.
       const element = document.getElementById(id);
@@ -40,9 +56,15 @@
 </head>
 
 <body>
+  <div id="menu-drawer" class="menu-drawer">
+      <div class="menu-drawer-item" onclick="scrollToElement('services'); moveDrawer();">Services</div>
+      <div class="menu-drawer-item" onclick="scrollToElement('technology'); moveDrawer();">Technology</div>
+      <div class="menu-drawer-item" onclick="scrollToElement('contact'); moveDrawer();">Contact</div>
+  </div>
   <div class="panel header">
     <div class="rail">
       <div class="header-content">
+        <div class="logo-push"></div>
         <div class="logo">
           <img src="./images/logo.PNG" alt="logo">
         </div>
@@ -50,6 +72,11 @@
           <div class="menu-item" onclick="scrollToElement('services')">Services</div>
           <div class="menu-item" onclick="scrollToElement('technology')">Technology</div>
           <div class="menu-item" onclick="scrollToElement('contact')">Contact</div>
+        </div>
+        <div class="menu-button" onclick="moveDrawer()">
+          <div class="menu-line"></div>
+          <div class="menu-line"></div>
+          <div class="menu-line"></div>
         </div>
       </div>
     </div>
