@@ -67,7 +67,7 @@
       // Validate first name.
       const first = firstElement.value.trim();
       if (!first || first === "") {
-        badInputNotification("First name must be provided");
+        badInputNotification("A first name must be provided.");
         return;
       }
 
@@ -107,23 +107,29 @@
       }
 
       // Validate phone number if necessary.
-      if (hasPhone) {
-
+      if (hasPhone && !phoneElement.validity.valid) {
+        phoneElement.value = "";
+        alert("The phone number provided is not valid.");
+        return;
       }
 
       // Validate email if necessary.
-      if (hasEmail) {
-
+      if (hasEmail && !emailElement.validity.valid) {
+        emailElement.value = "";
+        alert("The email address provided is not valid.");
+        return;
       }
+
+
     }
   </script>
 </head>
 
 <body>
   <div id="menu-drawer" class="menu-drawer">
-      <div class="menu-drawer-item" onclick="scrollToElement('services'); moveDrawer();">Services</div>
-      <div class="menu-drawer-item" onclick="scrollToElement('technology'); moveDrawer();">Technology</div>
-      <div class="menu-drawer-item" onclick="scrollToElement('contact'); moveDrawer();">Contact</div>
+    <div class="menu-drawer-item" onclick="scrollToElement('services'); moveDrawer();">Services</div>
+    <div class="menu-drawer-item" onclick="scrollToElement('technology'); moveDrawer();">Technology</div>
+    <div class="menu-drawer-item" onclick="scrollToElement('contact'); moveDrawer();">Contact</div>
   </div>
   <div class="panel header">
     <div class="rail">
@@ -269,20 +275,21 @@
         </div>
         <div class="contact-right">
           <div class="contact-row">
-            <input type="text" id="first" class="contact-input" placeholder="First name" maxlength="100">
-            <input type="text" id="last" class="contact-input" placeholder="Last name" maxlength="100">
+            <input type="text" id="first" name="first" class="contact-input" placeholder="First name" maxlength="100">
+            <input type="text" id="last" name="last" class="contact-input" placeholder="Last name" maxlength="100">
           </div>
           <div class="contact-row">
-            <input type="text" id="phone" class="contact-input" placeholder="Phone number" type="tel"
+            <input type="tel" id="phone" name="phone" class="contact-input" placeholder="Phone number"
               pattern="[\+]\d{2}[\(]\d{2}[\)]\d{4}[\-]\d{4}" maxlength="20">
-            <input type="text" id="email" class="contact-input" placeholder="Email address" maxlength="100">
+            <input type="email" id="email" name="email" class="contact-input"
+              pattern="[a-zA-Z0-9.-_]{1,}@[a-zA-Z.-]{2,}[.]{1}[a-zA-Z]{2,}" placeholder="Email address" maxlength="100">
           </div>
           <div class="contact-row">
-            <textarea class="contact-input" style="width: 100%;" maxlength="200"
+            <textarea id="message" name="message" class="contact-input" style="width: 100%;" maxlength="300"
               placeholder="What do you need help with?"></textarea>
           </div>
           <div class="contact-row" style="justify-content: flex-end; align-items: center;">
-            <div class="button">SUBMIT</div>
+            <div class="button" onclick="contact();">SUBMIT</div>
           </div>
         </div>
       </div>

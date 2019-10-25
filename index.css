@@ -18,11 +18,11 @@ textarea {
 }
 
 :-ms-input-placeholder {
-  color: ffffffa4;
+  color: #ffffffa4;
 }
 
 ::-ms-input-placeholder {
-  color: ffffffa4;
+  color: #ffffffa4;
 }
 
 .button {
@@ -65,7 +65,7 @@ textarea {
   border: none;
   border-radius: 0;
   font-family: inherit;
-  font-size: 1.1em;
+  font-size: 1em;
   background-color: #AA7725;
   color: #FFFFFF;
 }
@@ -474,7 +474,7 @@ textarea {
     width: 48.6%;
     margin-top: 15px;
     padding: 10px;
-    font-size: 1.25em;
+    font-size: 1em;
   }
 
   .contact-right {
