@@ -28,7 +28,10 @@ textarea {
 .button {
   margin-top: 10px;
   padding: 10px;
+  border: none;
   background-color: transparent;
+  color: white;
+  font: unset;
   font-size: 1.2em;
   cursor: pointer;
 }

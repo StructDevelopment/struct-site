@@ -52,76 +52,6 @@
 
       element.scrollIntoView();
     }
-
-    function badInputNotification(message) {
-      alert(message);
-    }
-
-    function contact() {
-      // Pull first name.
-      let firstElement = document.getElementById("first");
-      if (!firstElement) {
-        return;
-      }
-
-      // Validate first name.
-      const first = firstElement.value.trim();
-      if (!first || first === "") {
-        badInputNotification("A first name must be provided.");
-        return;
-      }
-
-      // Pull last name.
-      let lastElement = document.getElementById("last");
-      if (!lastElement) {
-        return;
-      }
-
-      // Get last name value.
-      const last = lastElement.value.trim();
-
-      // Pull phone number.
-      let phoneElement = document.getElementById("phone");
-      if (!phoneElement) {
-        return;
-      }
-
-      // Get phone number.
-      const phone = phoneElement.value.trim();
-
-      // Pull email.
-      let emailElement = document.getElementById("email");
-      if (!emailElement) {
-        return;
-      }
-
-      // Get email.
-      const email = emailElement.value.trim();
-
-      // Email or phone must exist.
-      let hasEmail = email && email !== "";
-      let hasPhone = phone && phone !== "";
-      if (!hasEmail && !hasPhone) {
-        badInputNotification("Either a phone number or email address must be provided.");
-        return;
-      }
-
-      // Validate phone number if necessary.
-      if (hasPhone && !phoneElement.validity.valid) {
-        phoneElement.value = "";
-        alert("The phone number provided is not valid.");
-        return;
-      }
-
-      // Validate email if necessary.
-      if (hasEmail && !emailElement.validity.valid) {
-        emailElement.value = "";
-        alert("The email address provided is not valid.");
-        return;
-      }
-
-
-    }
   </script>
 </head>
 
@@ -274,23 +204,23 @@
           </div>
         </div>
         <div class="contact-right">
-          <div class="contact-row">
-            <input type="text" id="first" name="first" class="contact-input" placeholder="First name" maxlength="100">
-            <input type="text" id="last" name="last" class="contact-input" placeholder="Last name" maxlength="100">
-          </div>
-          <div class="contact-row">
-            <input type="tel" id="phone" name="phone" class="contact-input" placeholder="Phone number"
-              pattern="[\+]\d{2}[\(]\d{2}[\)]\d{4}[\-]\d{4}" maxlength="20">
-            <input type="email" id="email" name="email" class="contact-input"
-              pattern="[a-zA-Z0-9.-_]{1,}@[a-zA-Z.-]{2,}[.]{1}[a-zA-Z]{2,}" placeholder="Email address" maxlength="100">
-          </div>
-          <div class="contact-row">
-            <textarea id="message" name="message" class="contact-input" style="width: 100%;" maxlength="300"
-              placeholder="What do you need help with?"></textarea>
-          </div>
-          <div class="contact-row" style="justify-content: flex-end; align-items: center;">
-            <div class="button" onclick="contact();">SUBMIT</div>
-          </div>
+          <form id="email-form" action="/email.php" method="post">
+            <div class="contact-row">
+              <input type="text" id="first" name="first" class="contact-input" placeholder="First name" maxlength="100" required>
+              <input type="text" id="last" name="last" class="contact-input" placeholder="Last name" maxlength="100">
+            </div>
+            <div class="contact-row">
+              <input type="tel" id="phone" name="phone" class="contact-input" placeholder="Phone number" maxlength="20">
+              <input type="email" id="email" name="email" class="contact-input" placeholder="Email address" maxlength="100">
+            </div>
+            <div class="contact-row">
+              <textarea id="message" name="message" class="contact-input" style="width: 100%;" maxlength="300"
+                placeholder="What do you need help with?"></textarea>
+            </div>
+            <div class="contact-row" style="justify-content: flex-end; align-items: center;">
+              <button type="submit" form="email-form" class="button">SUBMIT</button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
