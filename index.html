@@ -9,8 +9,26 @@
   <link rel="icon" href="favicon.ico" type="image/ico" />
   <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
   <link rel="stylesheet" type="text/css" media="screen" href="index.css" />
+  <link rel="stylesheet" type="text/css" media="screen" href="toastr.min.css" />
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="./jquery.js"></script>
+  <script src="./toastr.min.js"></script>
   <script>
+    function successCheck() {
+      // Load the URL parameters.
+      var urlParameters = new URLSearchParams(location.search);
+
+      // Check for the success value.
+      if (urlParameters.has("success")) {
+        const success = urlParameters.get("success");
+        if (success === "1") {
+          toastr.success("Thanks for reaching out! Your message has been sent.");
+        } else if (success === "0") {
+          toastr.error("There was an issue sending your message. Try again.");
+        }
+      }
+    }
+
     let collapsed = true;
 
     function moveDrawer() {
@@ -55,7 +73,7 @@
   </script>
 </head>
 
-<body>
+<body onload="successCheck();">
   <div id="menu-drawer" class="menu-drawer">
     <div class="menu-drawer-item" onclick="scrollToElement('services'); moveDrawer();">Services</div>
     <div class="menu-drawer-item" onclick="scrollToElement('technology'); moveDrawer();">Technology</div>
@@ -206,19 +224,21 @@
         <div class="contact-right">
           <form id="email-form" action="/email.php" method="post">
             <div class="contact-row">
-              <input type="text" id="first" name="first" class="contact-input" placeholder="First name" maxlength="100" required>
+              <input type="text" id="first" name="first" class="contact-input" placeholder="First name" maxlength="100"
+                required>
               <input type="text" id="last" name="last" class="contact-input" placeholder="Last name" maxlength="100">
             </div>
             <div class="contact-row">
               <input type="tel" id="phone" name="phone" class="contact-input" placeholder="Phone number" maxlength="20">
-              <input type="email" id="email" name="email" class="contact-input" placeholder="Email address" maxlength="100">
+              <input type="email" id="email" name="email" class="contact-input" placeholder="Email address"
+                maxlength="100">
             </div>
             <div class="contact-row">
               <textarea id="message" name="message" class="contact-input" style="width: 100%;" maxlength="300"
                 placeholder="What do you need help with?"></textarea>
             </div>
             <div class="contact-row" style="justify-content: flex-end; align-items: center;">
-              <button type="submit" form="email-form" class="button">SUBMIT</button>
+              <button type="submit" name="submit" form="email-form" class="button">SUBMIT</button>
             </div>
           </form>
         </div>
