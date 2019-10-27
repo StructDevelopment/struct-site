@@ -452,6 +452,43 @@ textarea {
   font-weight: bold;
 }
 
+.toast {
+  display: none;
+  position: fixed;
+  top: -40px;
+  right: 30px;
+  width: 290px;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: #ECA539CC;
+  color: white;
+  z-index: 1001;
+  cursor: pointer;
+}
+
+.toast:hover {
+  background-color: #ECA539;
+}
+
+.toast.hidden {
+  display: block;
+  top: -100px;
+  -webkit-animation: fadeout 0.5s;
+  animation: fadeout 0.5s;
+}
+
+.toast.visible {
+  display: block;
+  top: 30px;
+  -webkit-animation: fadein 0.5s;
+  animation: fadein 0.5s;
+}
+
+.toast.hidden {
+  -webkit-animation: fadeout 0.5s;
+  animation: fadeout 0.5s;
+}
+
 @media (min-width: 768px) {
   .contact-item {
     font-size: 1.25em;
@@ -645,5 +682,53 @@ textarea {
 @keyframes slide {
   100% {
     top: 67px;
+  }
+}
+
+@-webkit-keyframes fadein {
+  from {
+    top: -40px;
+    opacity: 0;
+  }
+
+  to {
+    top: 30px;
+    opacity: 1;
+  }
+}
+
+@keyframes fadein {
+  from {
+    top: -40px;
+    opacity: 0;
+  }
+
+  to {
+    top: 30px;
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes fadeout {
+  from {
+    top: 30px;
+    opacity: 1;
+  }
+
+  to {
+    top: -40px;
+    opacity: 0;
+  }
+}
+
+@keyframes fadeout {
+  from {
+    top: 30px;
+    opacity: 1;
+  }
+
+  to {
+    top: -40px;
+    opacity: 0;
   }
 }

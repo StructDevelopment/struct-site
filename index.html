@@ -9,71 +9,22 @@
   <link rel="icon" href="favicon.ico" type="image/ico" />
   <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
   <link rel="stylesheet" type="text/css" media="screen" href="index.css" />
-  <link rel="stylesheet" type="text/css" media="screen" href="toastr.min.css" />
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-  <script src="./jquery.js"></script>
-  <script src="./toastr.min.js"></script>
-  <script>
-    function successCheck() {
-      // Load the URL parameters.
-      var urlParameters = new URLSearchParams(location.search);
-
-      // Check for the success value.
-      if (urlParameters.has("success")) {
-        const success = urlParameters.get("success");
-        if (success === "1") {
-          toastr.success("Thanks for reaching out! Your message has been sent.");
-        } else if (success === "0") {
-          toastr.error("There was an issue sending your message. Try again.");
-        }
-      }
-    }
-
-    let collapsed = true;
-
-    function moveDrawer() {
-      // Find the drawer.
-      let drawer = document.getElementById("menu-drawer");
-      if (!drawer) {
-        return;
-      }
-
-      // Swap the collapsed value.
-      collapsed = !collapsed;
-
-      // Set the classes appropriately.
-      drawer.className = collapsed ? "menu-drawer" : "menu-drawer expanded";
-    }
-
-    function scrollToElement(id) {
-      // Find the element.
-      const element = document.getElementById(id);
-      if (!element) {
-        return;
-      }
-
-      // If window.scroll is available, use that.
-      if (window.scroll) {
-        const y = element.getBoundingClientRect().top + window.scrollY;
-        window.scroll({
-          top: y,
-          behavior: 'smooth'
-        });
-
-        return;
-      }
-
-      // If element.scrollIntoView is not available, then do nothing.
-      if (!element.scrollIntoView) {
-        return;
-      }
-
-      element.scrollIntoView();
-    }
-  </script>
+  <script src="index.js"></script>
 </head>
 
 <body onload="successCheck();">
+  <div id="good-toast" class="toast" onclick="clearToast();" onmouseenter="pauseToast();" onmouseleave="resumeToast(1000);">
+    Thanks!
+    <br />
+    Your message has been received.
+  </div>
+  <div id="bad-toast" class="toast bad" onclick="clearToast();" onmouseenter="pauseToast();" onmouseleave="resumeToast(1000);">
+    Whoops!
+    <br />
+    <br />
+    There was a problem delivering your message. Try again!
+  </div>
   <div id="menu-drawer" class="menu-drawer">
     <div class="menu-drawer-item" onclick="scrollToElement('services'); moveDrawer();">Services</div>
     <div class="menu-drawer-item" onclick="scrollToElement('technology'); moveDrawer();">Technology</div>
