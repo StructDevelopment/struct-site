@@ -1,4 +1,7 @@
 <?php
+  // Mute errors.
+  error_reporting(E_ERROR | E_PARSE);
+
   // Redirect.
   function redirect($success)
   {
@@ -68,9 +71,7 @@
   // Statics.
   $headers = "From: site@structdevelopment.com";
 
-  // Send mail.
-  $success = @mail("wroton@structdevelopment.com", "Contact Message", $emailMessage, $headers);
-  $success = $success ? "true" : "false";
+  // TODO: Send to mail server here.
 
   // Redirect to the site with an indication about success.
   redirect(true);
