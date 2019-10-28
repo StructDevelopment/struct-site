@@ -346,7 +346,7 @@ textarea {
 }
 
 .software-background img {
-  display: block;
+  display: none;
 }
 
 .software-content {
@@ -502,6 +502,10 @@ textarea {
 
   .menu {
     display: flex;
+  }
+
+  .software-background img {
+    display: block;
   }
 }
 
