@@ -14,6 +14,46 @@ function pauseToast() {
 function resumeToast(timeout = 2750) {
 }
 
+// Submits a contact request.
+function submit() {
+  // Get all the data.
+  let first = document.getElementById("first");
+  let last = document.getElementById("last");
+  let phone = document.getElementById("phone");
+  let email = document.getElementById("email");
+  let message = document.getElementById("message");
+
+  if (!first || !last || !phone || !email || !message) {
+    return;
+  }
+
+  fetch("api/contact", {
+    body: JSON.stringify({
+      first: first.value,
+      last: last.value,
+      phone: phone.value,
+      email: email.value,
+      message: message.value
+    }),
+    method: "POST"
+  }).then(x => {
+    return;
+  }).catch(err => {
+    console.log(err);
+    return;
+  }).finally(() => {
+    first.value = "";
+    last.value = "";
+    phone.value = "";
+    email.value = "";
+    message.value = "";
+    window.scroll({
+      top: -10000,
+      behavior: 'smooth'
+    });
+  });
+} 
+
 // Checks for the success value in the URL.
 function successCheck() {
 }
