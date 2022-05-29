@@ -13,18 +13,7 @@
   <script src="index.js"></script>
 </head>
 
-<body onload="successCheck();">
-  <div id="good-toast" class="toast" onclick="clearToast();" onmouseenter="pauseToast();" onmouseleave="resumeToast(1000);">
-    Thanks!
-    <br />
-    Your message has been received.
-  </div>
-  <div id="bad-toast" class="toast bad" onclick="clearToast();" onmouseenter="pauseToast();" onmouseleave="resumeToast(1000);">
-    Whoops!
-    <br />
-    <br />
-    There was a problem delivering your message. Try again!
-  </div>
+<body>
   <div id="menu-drawer" class="menu-drawer">
     <div class="menu-drawer-item" onclick="scrollToElement('services'); moveDrawer();">Services</div>
     <div class="menu-drawer-item" onclick="scrollToElement('technology'); moveDrawer();">Technology</div>

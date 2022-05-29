@@ -1,19 +1,3 @@
-let toast = undefined;
-let toastCleared = false;
-let toastTimeout = undefined;
-
-// Gets rid of the toast.
-function clearToast() {
-}
-
-// Pauses toast dismissal.
-function pauseToast() {
-}
-
-// Resumes toast dismissal.
-function resumeToast(timeout = 2750) {
-}
-
 // Submits a contact request.
 function submit() {
   // Get all the data.
@@ -24,6 +8,10 @@ function submit() {
   let message = document.getElementById("message");
 
   if (!first || !last || !phone || !email || !message) {
+    return;
+  }
+
+  if (!first.value || !last.value || !phone.value || !email.value || !message.value) {
     return;
   }
 
@@ -52,10 +40,6 @@ function submit() {
       behavior: 'smooth'
     });
   });
-} 
-
-// Checks for the success value in the URL.
-function successCheck() {
 }
 
 let collapsed = true;
