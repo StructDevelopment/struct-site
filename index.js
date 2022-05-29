@@ -11,7 +11,7 @@ function submit() {
     return;
   }
 
-  if (!first.value || !last.value || !phone.value || !email.value || !message.value) {
+  if (!phone.value || !email.value || !message.value) {
     return;
   }
 
