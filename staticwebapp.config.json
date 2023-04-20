@@ -1,7 +1,7 @@
 {
   "navigationFallback": {
     "rewrite": "index.html",
-    "exclude": ["**/*.{png,jpg,ico,ttf}"]
+    "exclude": ["images/*.{png,PNG,jpg}", "fonts/*.{ttf}", "index.css"]
   },
   "mimeTypes": {
     ".json": "text/json"
