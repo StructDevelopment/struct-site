@@ -1,0 +1,1460 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>When To Use Single or Split Queries in Entity Framework</title>
+  <style>
+    .vscode-dark img[src$=\#gh-light-mode-only],
+    .vscode-light img[src$=\#gh-dark-mode-only] {
+      display: none;
+    }
+  </style>
+
+  <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+  <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+  </style>
+  <style>
+    .task-list-item {
+      list-style-type: none;
+    }
+
+    .task-list-item-checkbox {
+      margin-left: -20px;
+      vertical-align: middle;
+      pointer-events: none;
+    }
+  </style>
+  <style>
+    :root {
+      --color-note: #0969da;
+      --color-tip: #1a7f37;
+      --color-warning: #9a6700;
+      --color-severe: #bc4c00;
+      --color-caution: #d1242f;
+      --color-important: #8250df;
+    }
+  </style>
+  <style>
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --color-note: #2f81f7;
+        --color-tip: #3fb950;
+        --color-warning: #d29922;
+        --color-severe: #db6d28;
+        --color-caution: #f85149;
+        --color-important: #a371f7;
+      }
+    }
+  </style>
+  <style>
+    .markdown-alert {
+      padding: 0.5rem 1rem;
+      margin-bottom: 16px;
+      color: inherit;
+      border-left: .25em solid #888;
+    }
+
+    .markdown-alert>:first-child {
+      margin-top: 0
+    }
+
+    .markdown-alert>:last-child {
+      margin-bottom: 0
+    }
+
+    .markdown-alert .markdown-alert-title {
+      display: flex;
+      font-weight: 500;
+      align-items: center;
+      line-height: 1
+    }
+
+    .markdown-alert .markdown-alert-title .octicon {
+      margin-right: 0.5rem;
+      display: inline-block;
+      overflow: visible !important;
+      vertical-align: text-bottom;
+      fill: currentColor;
+    }
+
+    .markdown-alert.markdown-alert-note {
+      border-left-color: var(--color-note);
+    }
+
+    .markdown-alert.markdown-alert-note .markdown-alert-title {
+      color: var(--color-note);
+    }
+
+    .markdown-alert.markdown-alert-important {
+      border-left-color: var(--color-important);
+    }
+
+    .markdown-alert.markdown-alert-important .markdown-alert-title {
+      color: var(--color-important);
+    }
+
+    .markdown-alert.markdown-alert-warning {
+      border-left-color: var(--color-warning);
+    }
+
+    .markdown-alert.markdown-alert-warning .markdown-alert-title {
+      color: var(--color-warning);
+    }
+
+    .markdown-alert.markdown-alert-tip {
+      border-left-color: var(--color-tip);
+    }
+
+    .markdown-alert.markdown-alert-tip .markdown-alert-title {
+      color: var(--color-tip);
+    }
+
+    .markdown-alert.markdown-alert-caution {
+      border-left-color: var(--color-caution);
+    }
+
+    .markdown-alert.markdown-alert-caution .markdown-alert-title {
+      color: var(--color-caution);
+    }
+  </style>
+
+</head>
+
+<body class="vscode-body vscode-light">
+  <h1 id="when-to-use-single-or-split-queries-in-entity-framework">When To Use Single or Split Queries in Entity
+    Framework</h1>
+  <p>The purpose of this article is to examine the difference between single and split queries, and to identify the
+    advantages to using one over the other.</p>
+  <h2 id="single-query">Single Query</h2>
+  <p>Entity Framework by default runs its queries as single queries. This means the entity you request along with all
+    related or included entities are resolved in a single query. Consider the first example below in which a single user
+    and its locations are queried.</p>
+  <h4 id="entity-framework-query">Entity Framework Query</h4>
+  <pre><code class="language-csharp"><span class="hljs-keyword">var</span> singleQuery = dbContext.Users
+    .Include(u =&gt; u.Locations)
+    .Where(u =&gt; u.UserID == <span class="hljs-number">1</span>)
+    .ToList();
+</code></pre>
+  <h4 id="translated-sql-query">Translated SQL Query</h4>
+  <pre><code class="language-sql"><span class="hljs-keyword">SELECT</span>
+  [u].[UserID],
+  [u].[EmailAddress],
+  [u].[FirstName],
+  [u].[LastName],
+  [l].[LocationID],
+  [l].[City],
+  [l].[State],
+  [l].[StreetAddress1],
+  [l].[StreetAddress2],
+  [l].[UserID],
+  [l].[ZipCode]
+<span class="hljs-keyword">FROM</span>
+  [<span class="hljs-keyword">User</span>].[Users] <span class="hljs-keyword">AS</span> [u]
+  <span class="hljs-keyword">LEFT</span> <span class="hljs-keyword">JOIN</span> [<span class="hljs-keyword">User</span>].[Locations] <span class="hljs-keyword">AS</span> [l] <span class="hljs-keyword">ON</span> [u].[UserID] <span class="hljs-operator">=</span> [l].[UserID]
+<span class="hljs-keyword">WHERE</span>
+  [u].[UserID] <span class="hljs-operator">=</span> <span class="hljs-number">1</span>
+<span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span>
+  [u].[UserID]
+</code></pre>
+  <h4 id="result-set">Result Set</h4>
+  <table>
+    <thead>
+      <tr>
+        <th>UserID</th>
+        <th>EmailAddress</th>
+        <th>FirstName</th>
+        <th>LastName</th>
+        <th>LocationID</th>
+        <th>City</th>
+        <th>State</th>
+        <th>StreetAddress1</th>
+        <th>StreetAddress2</th>
+        <th>UserID</th>
+        <th>ZipCode</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><a href="mailto:johndoe@structdevelopment.com">johndoe@structdevelopment.com</a></td>
+        <td>John</td>
+        <td>Doe</td>
+        <td>1</td>
+        <td>New York</td>
+        <td>NY</td>
+        <td>20 W 34th St.</td>
+        <td></td>
+        <td>1</td>
+        <td>10001</td>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td><a href="mailto:johndoe@structdevelopment.com">johndoe@structdevelopment.com</a></td>
+        <td>John</td>
+        <td>Doe</td>
+        <td>2</td>
+        <td>Chicago</td>
+        <td>IL</td>
+        <td>233 S Wacker Dr</td>
+        <td></td>
+        <td>1</td>
+        <td>60606</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>Entity Framework uses a join to gather data about the user and its locations in a single query. If a one-to-many
+    relationship is present, this single query will result in duplicate data being returned. If more joins are present
+    with one-to-many or many-to-many relationships, then this data duplication may increase exponentially as all the
+    data from all the tables are present in each row.</p>
+  <p>This problem may be solved by using Entity Framework's split query functionality.</p>
+  <h2 id="split-query">Split Query</h2>
+  <p>Entity Framework can be instructed to run its queries as split queries. This means the entity you request and each
+    of its related or included entities are resovled in their own separate queries. Consider the second example below in
+    which all users, all their locations, and all their purchases are queried.</p>
+  <h4 id="entity-framework-query-1">Entity Framework Query</h4>
+  <pre><code class="language-csharp"><span class="hljs-keyword">var</span> singleQuery = dbContext.Users
+    .Include(u =&gt; u.Locations)
+    .Include(u =&gt; u.Purchases)
+    .ThenInclude(p =&gt; p.PurchaseItems)
+    .ThenInclude(pi =&gt; pi.Items)
+    .ToList();
+</code></pre>
+  <h4 id="translated-sql-query-1">Translated SQL Query</h4>
+  <pre><code class="language-sql"><span class="hljs-keyword">SELECT</span>
+  [u].[UserID],
+  [u].[EmailAddress],
+  [u].[FirstName],
+  [u].[LastName],
+  [l].[LocationID],
+  [l].[City],
+  [l].[State],
+  [l].[StreetAddress1],
+  [l].[StreetAddress2],
+  [l].[UserID],
+  [l].[ZipCode],
+  [t0].[PurchaseID],
+  [t0].[PurchaseDate],
+  [t0].[PurchaserUserID],
+  [t0].[PurchaseItemID],
+  [t0].[ItemID],
+  [t0].[PurchaseID0],
+  [t0].[ItemID0],
+  [t0].[ItemName]
+<span class="hljs-keyword">FROM</span>
+  [<span class="hljs-keyword">User</span>].[Users] <span class="hljs-keyword">AS</span> [u]
+  <span class="hljs-keyword">LEFT</span> <span class="hljs-keyword">JOIN</span> [<span class="hljs-keyword">User</span>].[Locations] <span class="hljs-keyword">AS</span> [l] <span class="hljs-keyword">ON</span> [u].[UserID] <span class="hljs-operator">=</span> [l].[UserID]
+  <span class="hljs-keyword">LEFT</span> <span class="hljs-keyword">JOIN</span> (
+    <span class="hljs-keyword">SELECT</span>
+      [p].[PurchaseID],
+      [p].[PurchaseDate],
+      [p].[PurchaserUserID],
+      [t].[PurchaseItemID],
+      [t].[ItemID],
+      [t].[PurchaseID] <span class="hljs-keyword">AS</span> [PurchaseID0],
+      [t].[ItemID0],
+      [t].[ItemName]
+    <span class="hljs-keyword">FROM</span>
+      [Purchase].[Purchases] <span class="hljs-keyword">AS</span> [p]
+      <span class="hljs-keyword">LEFT</span> <span class="hljs-keyword">JOIN</span> (
+        <span class="hljs-keyword">SELECT</span>
+          [p0].[PurchaseItemID],
+          [p0].[ItemID],
+          [p0].[PurchaseID],
+          [i].[ItemID] <span class="hljs-keyword">AS</span> [ItemID0],
+          [i].[ItemName]
+        <span class="hljs-keyword">FROM</span>
+          [Purchase].[PurchaseItems] <span class="hljs-keyword">AS</span> [p0]
+          <span class="hljs-keyword">LEFT</span> <span class="hljs-keyword">JOIN</span> [Purchase].[Items] <span class="hljs-keyword">AS</span> [i] <span class="hljs-keyword">ON</span> [p0].[PurchaseItemID] <span class="hljs-operator">=</span> [i].[ItemID]
+      ) <span class="hljs-keyword">AS</span> [t] <span class="hljs-keyword">ON</span> [p].[PurchaseID] <span class="hljs-operator">=</span> [t].[PurchaseID]
+  ) <span class="hljs-keyword">AS</span> [t0] <span class="hljs-keyword">ON</span> [u].[UserID] <span class="hljs-operator">=</span> [t0].[PurchaserUserID]
+<span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span>
+  [u].[UserID],
+  [l].[LocationID],
+  [t0].[PurchaseID],
+  [t0].[PurchaseItemID]
+</code></pre>
+  <h4 id="result-set-1">Result Set</h4>
+  <table>
+    <thead>
+      <tr>
+        <th>UserID</th>
+        <th>EmailAddress</th>
+        <th>FirstName</th>
+        <th>LastName</th>
+        <th>LocationID</th>
+        <th>City</th>
+        <th>State</th>
+        <th>StreetAddress1</th>
+        <th>StreetAddress2</th>
+        <th>UserID</th>
+        <th>ZipCode</th>
+        <th>PurchaseID</th>
+        <th>PurchaseDate</th>
+        <th>PurchaserUserID</th>
+        <th>PurchaseItemID</th>
+        <th>ItemID</th>
+        <th>PurchaseID0</th>
+        <th>ItemID0</th>
+        <th>ItemName</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><a href="mailto:johndoe@structdevelopment.com">johndoe@structdevelopment.com</a></td>
+        <td>John</td>
+        <td>Doe</td>
+        <td>1</td>
+        <td>New York</td>
+        <td>NY</td>
+        <td>20 W 34th St.</td>
+        <td></td>
+        <td>1</td>
+        <td>10001</td>
+        <td>1</td>
+        <td>2024-01-15 02:17:42</td>
+        <td>1</td>
+        <td>2</td>
+        <td>4</td>
+        <td>1</td>
+        <td>2</td>
+        <td>Strawberry</td>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td><a href="mailto:johndoe@structdevelopment.com">johndoe@structdevelopment.com</a></td>
+        <td>John</td>
+        <td>Doe</td>
+        <td>1</td>
+        <td>New York</td>
+        <td>NY</td>
+        <td>20 W 34th St.</td>
+        <td></td>
+        <td>1</td>
+        <td>10001</td>
+        <td>2</td>
+        <td>2024-01-14 02:17:42</td>
+        <td>1</td>
+        <td>3</td>
+        <td>3</td>
+        <td>2</td>
+        <td>3</td>
+        <td>Chocolate</td>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td><a href="mailto:johndoe@structdevelopment.com">johndoe@structdevelopment.com</a></td>
+        <td>John</td>
+        <td>Doe</td>
+        <td>1</td>
+        <td>New York</td>
+        <td>NY</td>
+        <td>20 W 34th St.</td>
+        <td></td>
+        <td>1</td>
+        <td>10001</td>
+        <td>2</td>
+        <td>2024-01-14 02:17:42</td>
+        <td>1</td>
+        <td>4</td>
+        <td>4</td>
+        <td>2</td>
+        <td>4</td>
+        <td>Mint Chocolate Chip</td>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td><a href="mailto:johndoe@structdevelopment.com">johndoe@structdevelopment.com</a></td>
+        <td>John</td>
+        <td>Doe</td>
+        <td>1</td>
+        <td>New York</td>
+        <td>NY</td>
+        <td>20 W 34th St.</td>
+        <td></td>
+        <td>1</td>
+        <td>10001</td>
+        <td>2</td>
+        <td>2024-01-14 02:17:42</td>
+        <td>1</td>
+        <td>5</td>
+        <td>1</td>
+        <td>2</td>
+        <td>5</td>
+        <td>Butter Pecan</td>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td><a href="mailto:johndoe@structdevelopment.com">johndoe@structdevelopment.com</a></td>
+        <td>John</td>
+        <td>Doe</td>
+        <td>1</td>
+        <td>New York</td>
+        <td>NY</td>
+        <td>20 W 34th St.</td>
+        <td></td>
+        <td>1</td>
+        <td>10001</td>
+        <td>3</td>
+        <td>2024-01-17 02:17:42</td>
+        <td>1</td>
+        <td>9</td>
+        <td>6</td>
+        <td>3</td>
+        <td>NULL</td>
+        <td>NULL</td>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td><a href="mailto:johndoe@structdevelopment.com">johndoe@structdevelopment.com</a></td>
+        <td>John</td>
+        <td>Doe</td>
+        <td>1</td>
+        <td>New York</td>
+        <td>NY</td>
+        <td>20 W 34th St.</td>
+        <td></td>
+        <td>1</td>
+        <td>10001</td>
+        <td>3</td>
+        <td>2024-01-17 02:17:42</td>
+        <td>1</td>
+        <td>10</td>
+        <td>5</td>
+        <td>3</td>
+        <td>NULL</td>
+        <td>NULL</td>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td><a href="mailto:johndoe@structdevelopment.com">johndoe@structdevelopment.com</a></td>
+        <td>John</td>
+        <td>Doe</td>
+        <td>1</td>
+        <td>New York</td>
+        <td>NY</td>
+        <td>20 W 34th St.</td>
+        <td></td>
+        <td>1</td>
+        <td>10001</td>
+        <td>3</td>
+        <td>2024-01-17 02:17:42</td>
+        <td>1</td>
+        <td>11</td>
+        <td>4</td>
+        <td>3</td>
+        <td>NULL</td>
+        <td>NULL</td>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td><a href="mailto:johndoe@structdevelopment.com">johndoe@structdevelopment.com</a></td>
+        <td>John</td>
+        <td>Doe</td>
+        <td>1</td>
+        <td>New York</td>
+        <td>NY</td>
+        <td>20 W 34th St.</td>
+        <td></td>
+        <td>1</td>
+        <td>10001</td>
+        <td>3</td>
+        <td>2024-01-17 02:17:42</td>
+        <td>1</td>
+        <td>12</td>
+        <td>2</td>
+        <td>3</td>
+        <td>NULL</td>
+        <td>NULL</td>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td><a href="mailto:johndoe@structdevelopment.com">johndoe@structdevelopment.com</a></td>
+        <td>John</td>
+        <td>Doe</td>
+        <td>1</td>
+        <td>New York</td>
+        <td>NY</td>
+        <td>20 W 34th St.</td>
+        <td></td>
+        <td>1</td>
+        <td>10001</td>
+        <td>3</td>
+        <td>2024-01-17 02:17:42</td>
+        <td>1</td>
+        <td>13</td>
+        <td>1</td>
+        <td>3</td>
+        <td>NULL</td>
+        <td>NULL</td>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td><a href="mailto:johndoe@structdevelopment.com">johndoe@structdevelopment.com</a></td>
+        <td>John</td>
+        <td>Doe</td>
+        <td>2</td>
+        <td>Chicago</td>
+        <td>IL</td>
+        <td>233 S Wacker Dr</td>
+        <td></td>
+        <td>1</td>
+        <td>60606</td>
+        <td>1</td>
+        <td>2024-01-15 02:17:42</td>
+        <td>1</td>
+        <td>2</td>
+        <td>4</td>
+        <td>1</td>
+        <td>2</td>
+        <td>Strawberry</td>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td><a href="mailto:johndoe@structdevelopment.com">johndoe@structdevelopment.com</a></td>
+        <td>John</td>
+        <td>Doe</td>
+        <td>2</td>
+        <td>Chicago</td>
+        <td>IL</td>
+        <td>233 S Wacker Dr</td>
+        <td></td>
+        <td>1</td>
+        <td>60606</td>
+        <td>2</td>
+        <td>2024-01-14 02:17:42</td>
+        <td>1</td>
+        <td>3</td>
+        <td>3</td>
+        <td>2</td>
+        <td>3</td>
+        <td>Chocolate</td>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td><a href="mailto:johndoe@structdevelopment.com">johndoe@structdevelopment.com</a></td>
+        <td>John</td>
+        <td>Doe</td>
+        <td>2</td>
+        <td>Chicago</td>
+        <td>IL</td>
+        <td>233 S Wacker Dr</td>
+        <td></td>
+        <td>1</td>
+        <td>60606</td>
+        <td>2</td>
+        <td>2024-01-14 02:17:42</td>
+        <td>1</td>
+        <td>4</td>
+        <td>4</td>
+        <td>2</td>
+        <td>4</td>
+        <td>Mint Chocolate Chip</td>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td><a href="mailto:johndoe@structdevelopment.com">johndoe@structdevelopment.com</a></td>
+        <td>John</td>
+        <td>Doe</td>
+        <td>2</td>
+        <td>Chicago</td>
+        <td>IL</td>
+        <td>233 S Wacker Dr</td>
+        <td></td>
+        <td>1</td>
+        <td>60606</td>
+        <td>2</td>
+        <td>2024-01-14 02:17:42</td>
+        <td>1</td>
+        <td>5</td>
+        <td>1</td>
+        <td>2</td>
+        <td>5</td>
+        <td>Butter Pecan</td>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td><a href="mailto:johndoe@structdevelopment.com">johndoe@structdevelopment.com</a></td>
+        <td>John</td>
+        <td>Doe</td>
+        <td>2</td>
+        <td>Chicago</td>
+        <td>IL</td>
+        <td>233 S Wacker Dr</td>
+        <td></td>
+        <td>1</td>
+        <td>60606</td>
+        <td>3</td>
+        <td>2024-01-17 02:17:42</td>
+        <td>1</td>
+        <td>9</td>
+        <td>6</td>
+        <td>3</td>
+        <td>NULL</td>
+        <td>NULL</td>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td><a href="mailto:johndoe@structdevelopment.com">johndoe@structdevelopment.com</a></td>
+        <td>John</td>
+        <td>Doe</td>
+        <td>2</td>
+        <td>Chicago</td>
+        <td>IL</td>
+        <td>233 S Wacker Dr</td>
+        <td></td>
+        <td>1</td>
+        <td>60606</td>
+        <td>3</td>
+        <td>2024-01-17 02:17:42</td>
+        <td>1</td>
+        <td>10</td>
+        <td>5</td>
+        <td>3</td>
+        <td>NULL</td>
+        <td>NULL</td>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td><a href="mailto:johndoe@structdevelopment.com">johndoe@structdevelopment.com</a></td>
+        <td>John</td>
+        <td>Doe</td>
+        <td>2</td>
+        <td>Chicago</td>
+        <td>IL</td>
+        <td>233 S Wacker Dr</td>
+        <td></td>
+        <td>1</td>
+        <td>60606</td>
+        <td>3</td>
+        <td>2024-01-17 02:17:42</td>
+        <td>1</td>
+        <td>11</td>
+        <td>4</td>
+        <td>3</td>
+        <td>NULL</td>
+        <td>NULL</td>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td><a href="mailto:johndoe@structdevelopment.com">johndoe@structdevelopment.com</a></td>
+        <td>John</td>
+        <td>Doe</td>
+        <td>2</td>
+        <td>Chicago</td>
+        <td>IL</td>
+        <td>233 S Wacker Dr</td>
+        <td></td>
+        <td>1</td>
+        <td>60606</td>
+        <td>3</td>
+        <td>2024-01-17 02:17:42</td>
+        <td>1</td>
+        <td>12</td>
+        <td>2</td>
+        <td>3</td>
+        <td>NULL</td>
+        <td>NULL</td>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td><a href="mailto:johndoe@structdevelopment.com">johndoe@structdevelopment.com</a></td>
+        <td>John</td>
+        <td>Doe</td>
+        <td>2</td>
+        <td>Chicago</td>
+        <td>IL</td>
+        <td>233 S Wacker Dr</td>
+        <td></td>
+        <td>1</td>
+        <td>60606</td>
+        <td>3</td>
+        <td>2024-01-17 02:17:42</td>
+        <td>1</td>
+        <td>13</td>
+        <td>1</td>
+        <td>3</td>
+        <td>NULL</td>
+        <td>NULL</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><a href="mailto:janedoe@structdevelopment.com">janedoe@structdevelopment.com</a></td>
+        <td>Jane</td>
+        <td>Doe</td>
+        <td>3</td>
+        <td>Dallas</td>
+        <td>TX</td>
+        <td>300 Reunion Blvd E</td>
+        <td></td>
+        <td>2</td>
+        <td>75207</td>
+        <td>4</td>
+        <td>2024-01-13 02:17:57</td>
+        <td>2</td>
+        <td>14</td>
+        <td>4</td>
+        <td>4</td>
+        <td>NULL</td>
+        <td>NULL</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><a href="mailto:janedoe@structdevelopment.com">janedoe@structdevelopment.com</a></td>
+        <td>Jane</td>
+        <td>Doe</td>
+        <td>3</td>
+        <td>Dallas</td>
+        <td>TX</td>
+        <td>300 Reunion Blvd E</td>
+        <td></td>
+        <td>2</td>
+        <td>75207</td>
+        <td>4</td>
+        <td>2024-01-13 02:17:57</td>
+        <td>2</td>
+        <td>15</td>
+        <td>4</td>
+        <td>4</td>
+        <td>NULL</td>
+        <td>NULL</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><a href="mailto:janedoe@structdevelopment.com">janedoe@structdevelopment.com</a></td>
+        <td>Jane</td>
+        <td>Doe</td>
+        <td>3</td>
+        <td>Dallas</td>
+        <td>TX</td>
+        <td>300 Reunion Blvd E</td>
+        <td></td>
+        <td>2</td>
+        <td>75207</td>
+        <td>4</td>
+        <td>2024-01-13 02:17:57</td>
+        <td>2</td>
+        <td>16</td>
+        <td>2</td>
+        <td>4</td>
+        <td>NULL</td>
+        <td>NULL</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><a href="mailto:janedoe@structdevelopment.com">janedoe@structdevelopment.com</a></td>
+        <td>Jane</td>
+        <td>Doe</td>
+        <td>3</td>
+        <td>Dallas</td>
+        <td>TX</td>
+        <td>300 Reunion Blvd E</td>
+        <td></td>
+        <td>2</td>
+        <td>75207</td>
+        <td>4</td>
+        <td>2024-01-13 02:17:57</td>
+        <td>2</td>
+        <td>17</td>
+        <td>1</td>
+        <td>4</td>
+        <td>NULL</td>
+        <td>NULL</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><a href="mailto:janedoe@structdevelopment.com">janedoe@structdevelopment.com</a></td>
+        <td>Jane</td>
+        <td>Doe</td>
+        <td>3</td>
+        <td>Dallas</td>
+        <td>TX</td>
+        <td>300 Reunion Blvd E</td>
+        <td></td>
+        <td>2</td>
+        <td>75207</td>
+        <td>5</td>
+        <td>2024-01-16 02:17:57</td>
+        <td>2</td>
+        <td>6</td>
+        <td>4</td>
+        <td>5</td>
+        <td>6</td>
+        <td>Rocky Road</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><a href="mailto:janedoe@structdevelopment.com">janedoe@structdevelopment.com</a></td>
+        <td>Jane</td>
+        <td>Doe</td>
+        <td>3</td>
+        <td>Dallas</td>
+        <td>TX</td>
+        <td>300 Reunion Blvd E</td>
+        <td></td>
+        <td>2</td>
+        <td>75207</td>
+        <td>5</td>
+        <td>2024-01-16 02:17:57</td>
+        <td>2</td>
+        <td>7</td>
+        <td>3</td>
+        <td>5</td>
+        <td>NULL</td>
+        <td>NULL</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><a href="mailto:janedoe@structdevelopment.com">janedoe@structdevelopment.com</a></td>
+        <td>Jane</td>
+        <td>Doe</td>
+        <td>3</td>
+        <td>Dallas</td>
+        <td>TX</td>
+        <td>300 Reunion Blvd E</td>
+        <td></td>
+        <td>2</td>
+        <td>75207</td>
+        <td>5</td>
+        <td>2024-01-16 02:17:57</td>
+        <td>2</td>
+        <td>8</td>
+        <td>2</td>
+        <td>5</td>
+        <td>NULL</td>
+        <td>NULL</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><a href="mailto:janedoe@structdevelopment.com">janedoe@structdevelopment.com</a></td>
+        <td>Jane</td>
+        <td>Doe</td>
+        <td>3</td>
+        <td>Dallas</td>
+        <td>TX</td>
+        <td>300 Reunion Blvd E</td>
+        <td></td>
+        <td>2</td>
+        <td>75207</td>
+        <td>6</td>
+        <td>2024-01-17 02:17:57</td>
+        <td>2</td>
+        <td>1</td>
+        <td>1</td>
+        <td>6</td>
+        <td>1</td>
+        <td>Vanilla</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><a href="mailto:janedoe@structdevelopment.com">janedoe@structdevelopment.com</a></td>
+        <td>Jane</td>
+        <td>Doe</td>
+        <td>4</td>
+        <td>New York</td>
+        <td>NY</td>
+        <td>89 E 42nd St</td>
+        <td></td>
+        <td>2</td>
+        <td>10017</td>
+        <td>4</td>
+        <td>2024-01-13 02:17:57</td>
+        <td>2</td>
+        <td>14</td>
+        <td>4</td>
+        <td>4</td>
+        <td>NULL</td>
+        <td>NULL</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><a href="mailto:janedoe@structdevelopment.com">janedoe@structdevelopment.com</a></td>
+        <td>Jane</td>
+        <td>Doe</td>
+        <td>4</td>
+        <td>New York</td>
+        <td>NY</td>
+        <td>89 E 42nd St</td>
+        <td></td>
+        <td>2</td>
+        <td>10017</td>
+        <td>4</td>
+        <td>2024-01-13 02:17:57</td>
+        <td>2</td>
+        <td>15</td>
+        <td>4</td>
+        <td>4</td>
+        <td>NULL</td>
+        <td>NULL</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><a href="mailto:janedoe@structdevelopment.com">janedoe@structdevelopment.com</a></td>
+        <td>Jane</td>
+        <td>Doe</td>
+        <td>4</td>
+        <td>New York</td>
+        <td>NY</td>
+        <td>89 E 42nd St</td>
+        <td></td>
+        <td>2</td>
+        <td>10017</td>
+        <td>4</td>
+        <td>2024-01-13 02:17:57</td>
+        <td>2</td>
+        <td>16</td>
+        <td>2</td>
+        <td>4</td>
+        <td>NULL</td>
+        <td>NULL</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><a href="mailto:janedoe@structdevelopment.com">janedoe@structdevelopment.com</a></td>
+        <td>Jane</td>
+        <td>Doe</td>
+        <td>4</td>
+        <td>New York</td>
+        <td>NY</td>
+        <td>89 E 42nd St</td>
+        <td></td>
+        <td>2</td>
+        <td>10017</td>
+        <td>4</td>
+        <td>2024-01-13 02:17:57</td>
+        <td>2</td>
+        <td>17</td>
+        <td>1</td>
+        <td>4</td>
+        <td>NULL</td>
+        <td>NULL</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><a href="mailto:janedoe@structdevelopment.com">janedoe@structdevelopment.com</a></td>
+        <td>Jane</td>
+        <td>Doe</td>
+        <td>4</td>
+        <td>New York</td>
+        <td>NY</td>
+        <td>89 E 42nd St</td>
+        <td></td>
+        <td>2</td>
+        <td>10017</td>
+        <td>5</td>
+        <td>2024-01-16 02:17:57</td>
+        <td>2</td>
+        <td>6</td>
+        <td>4</td>
+        <td>5</td>
+        <td>6</td>
+        <td>Rocky Road</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><a href="mailto:janedoe@structdevelopment.com">janedoe@structdevelopment.com</a></td>
+        <td>Jane</td>
+        <td>Doe</td>
+        <td>4</td>
+        <td>New York</td>
+        <td>NY</td>
+        <td>89 E 42nd St</td>
+        <td></td>
+        <td>2</td>
+        <td>10017</td>
+        <td>5</td>
+        <td>2024-01-16 02:17:57</td>
+        <td>2</td>
+        <td>7</td>
+        <td>3</td>
+        <td>5</td>
+        <td>NULL</td>
+        <td>NULL</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><a href="mailto:janedoe@structdevelopment.com">janedoe@structdevelopment.com</a></td>
+        <td>Jane</td>
+        <td>Doe</td>
+        <td>4</td>
+        <td>New York</td>
+        <td>NY</td>
+        <td>89 E 42nd St</td>
+        <td></td>
+        <td>2</td>
+        <td>10017</td>
+        <td>5</td>
+        <td>2024-01-16 02:17:57</td>
+        <td>2</td>
+        <td>8</td>
+        <td>2</td>
+        <td>5</td>
+        <td>NULL</td>
+        <td>NULL</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><a href="mailto:janedoe@structdevelopment.com">janedoe@structdevelopment.com</a></td>
+        <td>Jane</td>
+        <td>Doe</td>
+        <td>4</td>
+        <td>New York</td>
+        <td>NY</td>
+        <td>89 E 42nd St</td>
+        <td></td>
+        <td>2</td>
+        <td>10017</td>
+        <td>6</td>
+        <td>2024-01-17 02:17:57</td>
+        <td>2</td>
+        <td>1</td>
+        <td>1</td>
+        <td>6</td>
+        <td>1</td>
+        <td>Vanilla</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>Since there are more relationships to resolve, more data duplication has occurred. Consider the third example, in
+    which the same query is re-run but with split query enabled.</p>
+  <h4 id="entity-framework-query-2">Entity Framework Query</h4>
+  <pre><code class="language-csharp"><span class="hljs-keyword">var</span> splitQuery = dbContext.Users
+    .Include(u =&gt; u.Locations)
+    .Include(u =&gt; u.Purchases)
+    .ThenInclude(p =&gt; p.PurchaseItems)
+    .AsSplitQuery()
+    .ToList();
+</code></pre>
+  <h4 id="translated-sql-query-2">Translated SQL Query</h4>
+  <pre><code class="language-sql"><span class="hljs-keyword">SELECT</span>
+  [u].[UserID],
+  [u].[EmailAddress],
+  [u].[FirstName],
+  [u].[LastName]
+<span class="hljs-keyword">FROM</span>
+  [<span class="hljs-keyword">User</span>].[Users] <span class="hljs-keyword">AS</span> [u]
+<span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span>
+  [u].[UserID]
+
+<span class="hljs-keyword">SELECT</span>
+  [l].[LocationID],
+  [l].[City],
+  [l].[State],
+  [l].[StreetAddress1],
+  [l].[StreetAddress2],
+  [l].[UserID],
+  [l].[ZipCode],
+  [u].[UserID]
+<span class="hljs-keyword">FROM</span>
+  [<span class="hljs-keyword">User</span>].[Users] <span class="hljs-keyword">AS</span> [u]
+  <span class="hljs-keyword">INNER</span> <span class="hljs-keyword">JOIN</span> [<span class="hljs-keyword">User</span>].[Locations] <span class="hljs-keyword">AS</span> [l] <span class="hljs-keyword">ON</span> [u].[UserID] <span class="hljs-operator">=</span> [l].[UserID]
+<span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span>
+  [u].[UserID]
+
+<span class="hljs-keyword">SELECT</span>
+  [p].[PurchaseID],
+  [p].[PurchaseDate],
+  [p].[PurchaserUserID],
+  [u].[UserID]
+<span class="hljs-keyword">FROM</span>
+  [<span class="hljs-keyword">User</span>].[Users] <span class="hljs-keyword">AS</span> [u]
+  <span class="hljs-keyword">INNER</span> <span class="hljs-keyword">JOIN</span> [Purchase].[Purchases] <span class="hljs-keyword">AS</span> [p] <span class="hljs-keyword">ON</span> [u].[UserID] <span class="hljs-operator">=</span> [p].[PurchaserUserID]
+<span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span>
+  [u].[UserID],
+  [p].[PurchaseID]
+
+<span class="hljs-keyword">SELECT</span>
+  [p0].[PurchaseItemID],
+  [p0].[ItemID],
+  [p0].[PurchaseID],
+  [u].[UserID],
+  [p].[PurchaseID]
+<span class="hljs-keyword">FROM</span>
+  [<span class="hljs-keyword">User</span>].[Users] <span class="hljs-keyword">AS</span> [u]
+  <span class="hljs-keyword">INNER</span> <span class="hljs-keyword">JOIN</span> [Purchase].[Purchases] <span class="hljs-keyword">AS</span> [p] <span class="hljs-keyword">ON</span> [u].[UserID] <span class="hljs-operator">=</span> [p].[PurchaserUserID]
+  <span class="hljs-keyword">INNER</span> <span class="hljs-keyword">JOIN</span> [Purchase].[PurchaseItems] <span class="hljs-keyword">AS</span> [p0] <span class="hljs-keyword">ON</span> [p].[PurchaseID] <span class="hljs-operator">=</span> [p0].[PurchaseID]
+<span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span>
+  [u].[UserID],
+  [p].[PurchaseID],
+  [p0].[PurchaseItemID]
+
+<span class="hljs-keyword">SELECT</span>
+  [i].[ItemID],
+  [i].[ItemName],
+  [u].[UserID],
+  [p].[PurchaseID],
+  [p0].[PurchaseItemID]
+<span class="hljs-keyword">FROM</span>
+  [<span class="hljs-keyword">User</span>].[Users] <span class="hljs-keyword">AS</span> [u]
+  <span class="hljs-keyword">INNER</span> <span class="hljs-keyword">JOIN</span> [Purchase].[Purchases] <span class="hljs-keyword">AS</span> [p] <span class="hljs-keyword">ON</span> [u].[UserID] <span class="hljs-operator">=</span> [p].[PurchaserUserID]
+  <span class="hljs-keyword">INNER</span> <span class="hljs-keyword">JOIN</span> [Purchase].[PurchaseItems] <span class="hljs-keyword">AS</span> [p0] <span class="hljs-keyword">ON</span> [p].[PurchaseID] <span class="hljs-operator">=</span> [p0].[PurchaseID]
+  <span class="hljs-keyword">INNER</span> <span class="hljs-keyword">JOIN</span> [Purchase].[Items] <span class="hljs-keyword">AS</span> [i] <span class="hljs-keyword">ON</span> [p0].[PurchaseItemID] <span class="hljs-operator">=</span> [i].[ItemID]
+<span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span>
+  [u].[UserID],
+  [p].[PurchaseID],
+  [p0].[PurchaseItemID]
+</code></pre>
+  <h4 id="result-set-1-user">Result Set 1 (User)</h4>
+  <table>
+    <thead>
+      <tr>
+        <th>UserID</th>
+        <th>EmailAddress</th>
+        <th>FirstName</th>
+        <th>LastName</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><a href="mailto:johndoe@structdevelopment.com">johndoe@structdevelopment.com</a></td>
+        <td>John</td>
+        <td>Doe</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><a href="mailto:janedoe@structdevelopment.com">janedoe@structdevelopment.com</a></td>
+        <td>Jane</td>
+        <td>Doe</td>
+      </tr>
+    </tbody>
+  </table>
+  <h4 id="result-set-2-locations">Result Set 2 (Locations)</h4>
+  <table>
+    <thead>
+      <tr>
+        <th>LocationID</th>
+        <th>City</th>
+        <th>State</th>
+        <th>StreetAddress1</th>
+        <th>StreetAddress2</th>
+        <th>UserID</th>
+        <th>ZipCode</th>
+        <th>UserID</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>New York</td>
+        <td>NY</td>
+        <td>20 W 34th St.</td>
+        <td></td>
+        <td>1</td>
+        <td>10001</td>
+        <td>1</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>Chicago</td>
+        <td>IL</td>
+        <td>233 S Wacker Dr</td>
+        <td></td>
+        <td>1</td>
+        <td>60606</td>
+        <td>1</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>Dallas</td>
+        <td>TX</td>
+        <td>300 Reunion Blvd E</td>
+        <td></td>
+        <td>2</td>
+        <td>75207</td>
+        <td>2</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td>New York</td>
+        <td>NY</td>
+        <td>89 E 42nd St</td>
+        <td></td>
+        <td>2</td>
+        <td>10017</td>
+        <td>2</td>
+      </tr>
+    </tbody>
+  </table>
+  <h4 id="result-set-3-purchases">Result Set 3 (Purchases)</h4>
+  <table>
+    <thead>
+      <tr>
+        <th>PurchaseID</th>
+        <th>PurchaseDate</th>
+        <th>PurchaserUserID</th>
+        <th>UserID</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>2024-01-15 02:17:42</td>
+        <td>1</td>
+        <td>1</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>2024-01-14 02:17:42</td>
+        <td>1</td>
+        <td>1</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>2024-01-17 02:17:42</td>
+        <td>1</td>
+        <td>1</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td>2024-01-13 02:17:57</td>
+        <td>2</td>
+        <td>2</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td>2024-01-16 02:17:57</td>
+        <td>2</td>
+        <td>2</td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td>2024-01-17 02:17:57</td>
+        <td>2</td>
+        <td>2</td>
+      </tr>
+    </tbody>
+  </table>
+  <h4 id="result-set-4-purchase-items">Result Set 4 (Purchase Items)</h4>
+  <table>
+    <thead>
+      <tr>
+        <th>PurchaseItemID</th>
+        <th>ItemID</th>
+        <th>PurchaseID</th>
+        <th>UserID</th>
+        <th>PurchaseID</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>2</td>
+        <td>4</td>
+        <td>1</td>
+        <td>1</td>
+        <td>1</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>3</td>
+        <td>2</td>
+        <td>1</td>
+        <td>2</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td>4</td>
+        <td>2</td>
+        <td>1</td>
+        <td>2</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td>1</td>
+        <td>2</td>
+        <td>1</td>
+        <td>2</td>
+      </tr>
+      <tr>
+        <td>9</td>
+        <td>6</td>
+        <td>3</td>
+        <td>1</td>
+        <td>3</td>
+      </tr>
+      <tr>
+        <td>10</td>
+        <td>5</td>
+        <td>3</td>
+        <td>1</td>
+        <td>3</td>
+      </tr>
+      <tr>
+        <td>11</td>
+        <td>4</td>
+        <td>3</td>
+        <td>1</td>
+        <td>3</td>
+      </tr>
+      <tr>
+        <td>12</td>
+        <td>2</td>
+        <td>3</td>
+        <td>1</td>
+        <td>3</td>
+      </tr>
+      <tr>
+        <td>13</td>
+        <td>1</td>
+        <td>3</td>
+        <td>1</td>
+        <td>3</td>
+      </tr>
+      <tr>
+        <td>14</td>
+        <td>4</td>
+        <td>4</td>
+        <td>2</td>
+        <td>4</td>
+      </tr>
+      <tr>
+        <td>15</td>
+        <td>4</td>
+        <td>4</td>
+        <td>2</td>
+        <td>4</td>
+      </tr>
+      <tr>
+        <td>16</td>
+        <td>2</td>
+        <td>4</td>
+        <td>2</td>
+        <td>4</td>
+      </tr>
+      <tr>
+        <td>17</td>
+        <td>1</td>
+        <td>4</td>
+        <td>2</td>
+        <td>4</td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td>4</td>
+        <td>5</td>
+        <td>2</td>
+        <td>5</td>
+      </tr>
+      <tr>
+        <td>7</td>
+        <td>3</td>
+        <td>5</td>
+        <td>2</td>
+        <td>5</td>
+      </tr>
+      <tr>
+        <td>8</td>
+        <td>2</td>
+        <td>5</td>
+        <td>2</td>
+        <td>5</td>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td>1</td>
+        <td>6</td>
+        <td>2</td>
+        <td>6</td>
+      </tr>
+    </tbody>
+  </table>
+  <h4 id="result-set-5-item-definitions">Result Set 5 (Item Definitions)</h4>
+  <table>
+    <thead>
+      <tr>
+        <th>ItemID</th>
+        <th>ItemName</th>
+        <th>UserID</th>
+        <th>PurchaseID</th>
+        <th>PurchaseItemID</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>2</td>
+        <td>Strawberry</td>
+        <td>1</td>
+        <td>1</td>
+        <td>2</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>Chocolate</td>
+        <td>1</td>
+        <td>2</td>
+        <td>3</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td>Mint Chocolate Chip</td>
+        <td>1</td>
+        <td>2</td>
+        <td>4</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td>Butter Pecan</td>
+        <td>1</td>
+        <td>2</td>
+        <td>5</td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td>Rocky Road</td>
+        <td>2</td>
+        <td>5</td>
+        <td>6</td>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td>Vanilla</td>
+        <td>2</td>
+        <td>6</td>
+        <td>1</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>Notice that multiple queries have now been run. One query resolves the user. Another query resolves the related
+    locations. A third query resolves the related purchases. A fourth query resolves the items of each purchase. The
+    last query resolves the definitions of each of those items. The use of five separate SQL queries is abstracted from
+    the caller, as Entity Framework manages the relationships in the background. This has obvious advantages in removing
+    data duplication. However, a major disadvantage of using split queries is <strong>each query is performed in a
+      separate round trip to the database</strong>. This means when determining whether to use split queries or a single
+    query, the trade-off of data duplication with network latency must be considered.</p>
+  <h2 id="both-options-considered">Both Options Considered</h2>
+  <p>Single query and split queries both have their uses. Like most performance considerations in a database, deciding
+    which to use comes down to knowing the data and anticipating how it will be used. The factors to consider when
+    determining which to use are as follows:</p>
+  <ul>
+    <li><strong>Data Duplication</strong>. If it is expected that a large amount of data duplication may occur as a
+      result of a query, using split queries should be considered. Alternatively, if duplication is limited, then the
+      network latency that may be avoided by using a single query may be more effective.</li>
+    <li><strong>Expected Network Conditions</strong>. The network bandwidth and latency between an application and a
+      database varies by scenario. A database running on the same machine as its application counterpart may not have
+      many network latency or bandwidth considerations to consider at all. A database running in a different region of
+      the world from its application counterpart may be subject to more strict latency considerations. Lastly, a
+      database running on a lower tier network may be subject to more strict bandwidth considerations.</li>
+    <li><strong>Data Usage</strong>. The last factor to consider is the context of when the query is run. For example, a
+      query that's run once a day on an isolated set of data may have no need to consider performance to the degree of
+      fine-tuning Entity Framework queries. As a counter example, a query that's running 1000s of times a day on a
+      particularly busy set of tables will likely need to ensure this query runs as optimally as possible.</li>
+  </ul>
+  <h2 id="final-notes">Final Notes</h2>
+  <p>Microsoft has published an <a
+      href="https://learn.microsoft.com/en-us/ef/core/querying/single-split-queries">article on the use of split queries
+      vs. single queries</a>. More information about the considerations of this decision can be found there.</p>
+
+
+
+</body>
+
+</html>
