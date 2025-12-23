@@ -1,7 +1,14 @@
 {
   "navigationFallback": {
     "rewrite": "index.html",
-    "exclude": ["images/*.{png,PNG,jpg}", "fonts/*.{ttf}", "index.css"]
+    "exclude": [
+      "images/*.{png,PNG,jpg}",
+      "fonts/*.{ttf}",
+      "index.css"
+    ]
+  },
+  "platform": {
+    "apiRuntime": "node:20"
   },
   "mimeTypes": {
     ".json": "text/json"
