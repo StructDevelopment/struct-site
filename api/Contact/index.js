@@ -1,9 +1,9 @@
 const { EmailClient } = require("@azure/communication-email");
 
-const connectionString = process.env['COMMUNICATION_SERVICES_CONNECTION_STRING'];
-const emailClient = new EmailClient(connectionString);
-
 module.exports = async function (context, req) {
+  const connectionString = process.env['COMMUNICATION_SERVICES_CONNECTION_STRING'];
+  const emailClient = new EmailClient(connectionString);
+
   if (req && req.rawBody && req.rawBody.length < 3000) {
     const { email, first, last, message, phone } = req.body;
     const emailMessage = {
@@ -20,7 +20,7 @@ module.exports = async function (context, req) {
     try {
       const poller = await emailClient.beginSend(emailMessage);
       await poller.pollUntilDone();
-      
+
       console.log(`Contact email sent. JSON body sent: '${req.rawBody}'.`);
     } catch (err) {
       console.error(`Contact email failed. ${err}. JSON body dropped: '${req.rawBody}'.`);
